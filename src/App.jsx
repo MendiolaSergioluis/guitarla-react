@@ -6,6 +6,20 @@ import {db} from "./data/db.js";
 function App() {
 
   const [data, setData] = useState([])
+  const [cart, setCart] = useState([])
+
+  function addToCart(item) {
+    const itemExists = cart.findIndex(i => i.id === item.id)
+    if (itemExists >= 0) { // Existe en el carrito
+      // Actualizar la cantidad
+      const updatedCart = [...cart]
+      updatedCart[itemExists].quantity++
+      setCart(updatedCart)
+    } else { // No existe en el carrito
+      item.quantity = 1
+      setCart([...cart, item])
+    }
+  }
 
   useEffect(() => {
     setData(db)
@@ -18,10 +32,11 @@ function App() {
         <h2 className="text-center">Nuestra Colección</h2>
 
         <div className="row mt-5">
-          {data.map((guitar) =>(
+          {data.map((guitar) => (
             <Guitar
               key={guitar.id}
               guitar={guitar}
+              addToCart={addToCart}
             />
           ))}
         </div>
