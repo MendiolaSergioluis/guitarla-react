@@ -5,12 +5,21 @@ import {db} from "./data/db.js";
 
 function App() {
 
+  // Hooks
   const [data, setData] = useState([])
-  const [cart, setCart] = useState([])
+  const [cart, setCart] = useState(initialCart)
   useEffect(() => {
     setData(db)
   }, []);
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart))
+  }, [cart])
 
+  // Functions
+  function initialCart() {
+    const localStorageCart = localStorage.getItem('cart')
+    return localStorageCart ? JSON.parse(localStorageCart) : []
+  }
   function addToCart(item) {
     const itemExists = cart.findIndex(i => i.id === item.id)
     if (itemExists >= 0) { // Existe en el carrito
@@ -22,17 +31,48 @@ function App() {
       item.quantity = 1
       setCart([...cart, item])
     }
-
-
   }
   function removeFromCart(id){
     setCart(prevCart => prevCart.filter(guitar => guitar.id !== id) )
   }
+  function increaseQuantity(id){
+    const updatedCart = cart.map( item => {
+      if(item.id === id && item.quantity < 12 ){
+        return {
+          ...item,
+          quantity: item.quantity + 1
+        }
+      }
+      return item
+    })
+    setCart(updatedCart)
+  }
+  function decreaseQuantity(id) {
+    const updatedCart = cart.map( item => {
+      if(item.id === id && item.quantity > 1){
+        return {
+          ...item,
+          quantity: item.quantity - 1
+        }
+      }
+      return item
+    })
+    setCart(updatedCart)
+  }
+  function clearCart(){
+    setCart([])
+  }
+
+
+  // To Render...
   return (
     <>
       <Header
         cart={cart}
         removeFromCart={removeFromCart}
+        increaseQuantity={increaseQuantity}
+        decreaseQuantity={decreaseQuantity}
+        clearCart={clearCart}
       />
       <main className="container-xl mt-5">
         <h2 className="text-center">Nuestra Colección</h2>
