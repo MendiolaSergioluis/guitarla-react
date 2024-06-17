@@ -1,15 +1,4 @@
-import { useMemo } from 'react'
-// eslint-disable-next-line react/prop-types
-export function Header({cart, removeFromCart, increaseQuantity, decreaseQuantity, clearCart}) {
-
-  // State derivado
-  // eslint-disable-next-line react/prop-types
-  const isEmpty = useMemo(() => cart.length === 0, [cart])
-
-  // Reduce
-  // eslint-disable-next-line react/prop-types
-  const cartTotal = useMemo(() => cart.reduce((total, item) => total + (item.quantity * item.price), 0),
-    [cart])
+export function Header({cart, removeFromCart, increaseQuantity, decreaseQuantity, clearCart, isEmpty, cartTotal}) {
 
   return (
     <header className="py-5 header">
@@ -94,7 +83,8 @@ export function Header({cart, removeFromCart, increaseQuantity, decreaseQuantity
                 <button
                   className="btn btn-dark w-100 mt-3 p-2"
                   onClick={() => clearCart()}
-                >Vaciar Carrito</button>
+                >Vaciar Carrito
+                </button>
               </div>
             </div>
           </nav>
